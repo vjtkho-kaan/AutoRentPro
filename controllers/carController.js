@@ -6,48 +6,48 @@ const User = require('../models/User');
 // 1. Hiển thị danh sách xe (READ) - Có Sắp xếp & Hiển thị Chủ xe
 exports.renderCarList = async (req, res) => {
     try {
-        const sortType = req.query.sort || 'latest'; // Mặc định: Mới thêm vào trước
+        const sortType = req.query.sort || 'latest';
 
-        // A. Cấu hình Sắp xếp cho Database (MongoDB)
         let dbSort = {};
         switch (sortType) {
-            case 'latest': dbSort = { createdAt: -1 }; break; // Mới thêm vào DB
-            case 'oldest': dbSort = { createdAt: 1 }; break;  // Cũ nhất
-            case 'year_desc': dbSort = { year: -1 }; break;   // Năm SX: Mới -> Cũ
-            case 'year_asc': dbSort = { year: 1 }; break;     // Năm SX: Cũ -> Mới
-            case 'brand_alpha': dbSort = { brand: 1, model: 1 }; break; // Tên hãng A-Z
+            case 'latest': dbSort = { createdAt: -1 }; break;
+            case 'oldest': dbSort = { createdAt: 1 }; break;
+            case 'year_desc': dbSort = { year: -1 }; break;
+            case 'year_asc': dbSort = { year: 1 }; break;
+            case 'brand_alpha': dbSort = { brand: 1, model: 1 }; break;
+            case 'price_asc': dbSort = { pricePerDay: 1 }; break;
+            case 'price_desc': dbSort = { pricePerDay: -1 }; break;
+            case 'rating': dbSort = { averageRating: -1 }; break;
             default: dbSort = { createdAt: -1 };
         }
 
-        // B. Lấy dữ liệu từ DB
         let cars = await Car.find()
-            .populate('ownerId') // [QUAN TRỌNG] Lấy thông tin Chủ xe từ bảng User
-            .sort(dbSort)        // Sort các trường cơ bản
+            .populate('ownerId')
+            .sort(dbSort)
             .lean();
 
-        // C. Xử lý Sắp xếp Tên Chủ Xe (Logic JavaScript vì MongoDB khó sort bảng khác)
+        // Sắp xếp theo tên chủ xe
         if (sortType === 'owner_alpha') {
             cars.sort((a, b) => {
                 const nameA = a.ownerId ? a.ownerId.name.toUpperCase() : '';
                 const nameB = b.ownerId ? b.ownerId.name.toUpperCase() : '';
-                return nameA.localeCompare(nameB); // So sánh chuỗi A-Z
+                return nameA.localeCompare(nameB);
             });
         }
 
-        // D. Xử lý hiển thị (Trạng thái màu sắc & Format ngày)
+        // Thêm flags trạng thái
         cars = cars.map(car => ({
             ...car,
             isAvailable: car.status === 'AVAILABLE',
             isRented: car.status === 'RENTED',
             isMaintenance: car.status === 'MAINTENANCE',
-            // Format ngày tạo để hiển thị đẹp hơn
             createdAtFormatted: car.createdAt ? new Date(car.createdAt).toLocaleDateString('vi-VN') : ''
         }));
 
         res.render('cars/list', { 
             cars, 
             title: 'Quản lý Xe',
-            currentSort: sortType // Để giữ trạng thái select box
+            currentSort: sortType
         });
 
     } catch (err) {
@@ -56,42 +56,78 @@ exports.renderCarList = async (req, res) => {
     }
 };
 
-// 2. Hiển thị Form thêm mới (Kèm danh sách Owner)
+// 2. Hiển thị Form thêm mới
 exports.renderCreatePage = async (req, res) => {
     try {
-        // [LOGIC] Chỉ lấy user có role là CAR_OWNER
-        const owners = await User.find({ role: 'CAR_OWNER' }).lean();
+        // Lấy tất cả users để chọn làm owner
+        const owners = await User.find().lean();
         res.render('cars/create', { owners, title: 'Thêm xe mới' });
     } catch (err) {
         res.status(500).send("Lỗi: " + err.message);
     }
 };
 
-// 3. Xử lý lưu xe mới
+// 3. Xử lý lưu xe mới với enterprise fields
 exports.addNewCar = async (req, res) => {
     try {
-        const { brand, model, year, plateNumber, pricePerDay, ownerId } = req.body;
+        const { 
+            brand, model, year, plateNumber, pricePerDay, status,
+            category, transmission, fuelType, seats,
+            features, location, description,
+            mileageLimit, extraMileageCharge, deposit, insuranceIncluded,
+            images
+        } = req.body;
 
         // Check trùng biển số
         const existingCar = await Car.findOne({ plateNumber });
         if (existingCar) {
-            const owners = await User.find({ role: 'CAR_OWNER' }).lean();
-            return res.render('createCar', { 
+            const owners = await User.find().lean();
+            return res.render('cars/create', { 
                 owners,
                 error: `Biển số ${plateNumber} đã tồn tại!`,
-                oldData: req.body 
+                oldData: req.body,
+                title: 'Thêm xe mới'
             });
         }
 
+        // Xử lý features array
+        let featuresArray = [];
+        if (features) {
+            featuresArray = Array.isArray(features) ? features : [features];
+        }
+
+        // Xử lý images array
+        let imagesArray = [];
+        if (images && images.trim()) {
+            imagesArray = [images.trim()];
+        }
+
         const newCar = new Car({
-            brand, model, year, plateNumber, pricePerDay,
-            status: 'AVAILABLE',
-            ownerId: ownerId // [QUAN TRỌNG] Lưu ID chủ xe
+            brand, 
+            model, 
+            year: parseInt(year), 
+            plateNumber, 
+            pricePerDay: parseFloat(pricePerDay),
+            status: status || 'AVAILABLE',
+            // Enterprise fields
+            category,
+            transmission,
+            fuelType,
+            seats: parseInt(seats) || 5,
+            features: featuresArray,
+            location: location || {},
+            description,
+            mileageLimit: parseInt(mileageLimit) || 200,
+            extraMileageCharge: parseFloat(extraMileageCharge) || 5000,
+            deposit: parseFloat(deposit) || 0,
+            insuranceIncluded: insuranceIncluded === 'on',
+            images: imagesArray
         });
 
         await newCar.save();
         res.redirect('/cars'); 
     } catch (err) {
+        console.error('Error creating car:', err);
         res.status(500).send("Lỗi Server: " + err.message);
     }
 };
@@ -106,11 +142,11 @@ exports.deleteCar = async (req, res) => {
     }
 };
 
-// 5. Hiển thị trang Edit (Kèm danh sách Owner)
+// 5. Hiển thị trang Edit
 exports.renderEditPage = async (req, res) => {
     try {
         const car = await Car.findById(req.params.id).lean();
-        const owners = await User.find({ role: 'CAR_OWNER' }).lean();
+        const owners = await User.find().lean();
 
         if (!car) return res.redirect('/cars');
 
@@ -120,17 +156,54 @@ exports.renderEditPage = async (req, res) => {
     }
 };
 
-// 6. Xử lý Update
+// 6. Xử lý Update với enterprise fields
 exports.updateCar = async (req, res) => {
     try {
-        const { brand, model, year, plateNumber, pricePerDay, status, ownerId } = req.body;
-        
+        const { 
+            brand, model, year, plateNumber, pricePerDay, status,
+            category, transmission, fuelType, seats,
+            features, location, description,
+            mileageLimit, extraMileageCharge, deposit, insuranceIncluded,
+            images
+        } = req.body;
+
+        // Xử lý features array
+        let featuresArray = [];
+        if (features) {
+            featuresArray = Array.isArray(features) ? features : [features];
+        }
+
+        // Xử lý images array
+        let imagesArray = [];
+        if (images && images.trim()) {
+            imagesArray = [images.trim()];
+        }
+
         await Car.findByIdAndUpdate(req.params.id, {
-            brand, model, year, plateNumber, pricePerDay, status, ownerId
+            brand, 
+            model, 
+            year: parseInt(year),
+            plateNumber, 
+            pricePerDay: parseFloat(pricePerDay),
+            status,
+            // Enterprise fields
+            category,
+            transmission,
+            fuelType,
+            seats: parseInt(seats) || 5,
+            features: featuresArray,
+            location: location || {},
+            description,
+            mileageLimit: parseInt(mileageLimit) || 200,
+            extraMileageCharge: parseFloat(extraMileageCharge) || 5000,
+            deposit: parseFloat(deposit) || 0,
+            insuranceIncluded: insuranceIncluded === 'on',
+            images: imagesArray
         });
 
         res.redirect('/cars');
     } catch (err) {
+        console.error('Error updating car:', err);
         res.status(500).send("Lỗi Update: " + err.message);
     }
 };

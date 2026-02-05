@@ -1,5 +1,5 @@
 <div class="row justify-content-center">
-    <div class="col-lg-7 col-md-9">
+    <div class="col-lg-10 col-md-11">
 
         {{#if error}}
         <div class="alert alert-danger alert-dismissible fade show mb-4 shadow-sm border-0 rounded-3" role="alert">
@@ -10,71 +10,265 @@
 
         <div class="card shadow-sm border-0 rounded-4">
             <div class="card-header bg-white text-center py-4 border-bottom">
-                <h4 class="mb-1 fw-bold text-primary">Thêm Xe Mới</h4>
+                <h4 class="mb-1 fw-bold text-primary"><i class="bi bi-car-front me-2"></i>Thêm Xe Mới</h4>
                 <p class="text-secondary small mb-0">Nhập thông tin chi tiết để thêm xe vào hệ thống</p>
             </div>
             <div class="card-body p-4 p-md-5">
                 <form action="/cars/store" method="POST">
 
-                    <div class="mb-4">
-                        <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Chủ sở hữu</label>
-                        <select name="ownerId" class="form-select form-select-lg bg-light border-0 focus-ring-none"
-                            required>
-                            <option value="">-- Chọn chủ xe --</option>
-                            {{#each owners}}
-                            <option value="{{this._id}}" {{#if (eq this._id ../oldData.ownerId)}}selected{{/if}}>
-                                {{this.name}} ({{this.email}})
-                            </option>
-                            {{/each}}
-                        </select>
-                        <div class="form-text mt-2"><i class="bi bi-info-circle me-1"></i>Chỉ hiển thị User có quyền
-                            Owner.</div>
-                    </div>
+                    {{!-- SECTION 1: Basic Info --}}
+                    <h6 class="text-muted fw-bold text-uppercase mb-3"><i class="bi bi-info-circle me-2"></i>Thông tin
+                        cơ bản</h6>
 
-                    <div class="row g-3">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Hãng xe</label>
-                            <input type="text" name="brand"
-                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Hãng xe *</label>
+                            <input type="text" name="brand" class="form-control bg-light border-0"
                                 placeholder="VD: Toyota" value="{{oldData.brand}}" required>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Mẫu xe</label>
-                            <input type="text" name="model"
-                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
-                                placeholder="VD: Camry" value="{{oldData.model}}" required>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Mẫu xe *</label>
+                            <input type="text" name="model" class="form-control bg-light border-0"
+                                placeholder="VD: Camry 2.5Q" value="{{oldData.model}}" required>
                         </div>
                     </div>
 
-                    <div class="row g-3">
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Năm SX</label>
-                            <input type="number" name="year"
-                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
-                                placeholder="2024" value="{{oldData.year}}" required>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-secondary">Năm SX *</label>
+                            <input type="number" name="year" class="form-control bg-light border-0" placeholder="2024"
+                                value="{{oldData.year}}" min="2000" max="2030" required>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Biển số</label>
-                            <input type="text" name="plateNumber"
-                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
-                                placeholder="30A-..." value="{{oldData.plateNumber}}" required>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-secondary">Biển số *</label>
+                            <input type="text" name="plateNumber" class="form-control bg-light border-0"
+                                placeholder="30A-12345" value="{{oldData.plateNumber}}" required>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Giá/ngày
-                                ($)</label>
-                            <input type="number" name="pricePerDay"
-                                class="form-control form-control-lg bg-light border-0 focus-ring-none" placeholder="50"
-                                value="{{oldData.pricePerDay}}" required>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-secondary">Giá thuê/ngày (₫) *</label>
+                            <input type="number" name="pricePerDay" class="form-control bg-light border-0"
+                                placeholder="1000000" value="{{oldData.pricePerDay}}" min="0" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-secondary">Trạng thái *</label>
+                            <select name="status" class="form-select bg-light border-0" required>
+                                <option value="AVAILABLE" {{#if (eq oldData.status 'AVAILABLE' )}}selected{{/if}}>Sẵn
+                                    sàng</option>
+                                <option value="RENTED" {{#if (eq oldData.status 'RENTED' )}}selected{{/if}}>Đang thuê
+                                </option>
+                                <option value="MAINTENANCE" {{#if (eq oldData.status 'MAINTENANCE' )}}selected{{/if}}>
+                                    Bảo trì</option>
+                            </select>
                         </div>
                     </div>
 
-                    <hr class="my-4 border-secondary-subtle">
+                    <hr class="my-4">
+
+                    {{!-- SECTION 2: Specifications --}}
+                    <h6 class="text-muted fw-bold text-uppercase mb-3"><i class="bi bi-gear me-2"></i>Thông số kỹ thuật
+                    </h6>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-secondary">Loại xe *</label>
+                            <select name="category" class="form-select bg-light border-0" required>
+                                <option value="">-- Chọn loại --</option>
+                                <option value="ECONOMY" {{#if (eq oldData.category 'ECONOMY' )}}selected{{/if}}>🚙 Tiết
+                                    kiệm</option>
+                                <option value="COMFORT" {{#if (eq oldData.category 'COMFORT' )}}selected{{/if}}>🚗 Thoải
+                                    mái</option>
+                                <option value="PREMIUM" {{#if (eq oldData.category 'PREMIUM' )}}selected{{/if}}>✨ Cao
+                                    cấp</option>
+                                <option value="SUV" {{#if (eq oldData.category 'SUV' )}}selected{{/if}}>🚙 SUV</option>
+                                <option value="VAN" {{#if (eq oldData.category 'VAN' )}}selected{{/if}}>🚐 Van/MPV
+                                </option>
+                                <option value="LUXURY" {{#if (eq oldData.category 'LUXURY' )}}selected{{/if}}>💎 Sang
+                                    trọng</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-secondary">Hộp số *</label>
+                            <select name="transmission" class="form-select bg-light border-0" required>
+                                <option value="AUTOMATIC" {{#if (eq oldData.transmission 'AUTOMATIC' )}}selected{{/if}}>
+                                    Tự động</option>
+                                <option value="MANUAL" {{#if (eq oldData.transmission 'MANUAL' )}}selected{{/if}}>Số sàn
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-secondary">Nhiên liệu *</label>
+                            <select name="fuelType" class="form-select bg-light border-0" required>
+                                <option value="PETROL" {{#if (eq oldData.fuelType 'PETROL' )}}selected{{/if}}>⛽ Xăng
+                                </option>
+                                <option value="DIESEL" {{#if (eq oldData.fuelType 'DIESEL' )}}selected{{/if}}>🛢️ Dầu
+                                </option>
+                                <option value="ELECTRIC" {{#if (eq oldData.fuelType 'ELECTRIC' )}}selected{{/if}}>⚡ Điện
+                                </option>
+                                <option value="HYBRID" {{#if (eq oldData.fuelType 'HYBRID' )}}selected{{/if}}>🔋 Hybrid
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-secondary">Số chỗ ngồi *</label>
+                            <select name="seats" class="form-select bg-light border-0" required>
+                                <option value="2" {{#if (eq oldData.seats 2)}}selected{{/if}}>2 chỗ</option>
+                                <option value="4" {{#if (eq oldData.seats 4)}}selected{{/if}}>4 chỗ</option>
+                                <option value="5" {{#if (eq oldData.seats 5)}}selected{{/if}} selected>5 chỗ</option>
+                                <option value="7" {{#if (eq oldData.seats 7)}}selected{{/if}}>7 chỗ</option>
+                                <option value="9" {{#if (eq oldData.seats 9)}}selected{{/if}}>9 chỗ</option>
+                                <option value="11" {{#if (eq oldData.seats 11)}}selected{{/if}}>11+ chỗ</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    {{!-- SECTION 3: Features --}}
+                    <h6 class="text-muted fw-bold text-uppercase mb-3"><i class="bi bi-stars me-2"></i>Tiện nghi</h6>
+
+                    <div class="row g-2 mb-4">
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="features" value="GPS"
+                                    id="featureGPS">
+                                <label class="form-check-label small" for="featureGPS">📍 GPS/Định vị</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="features" value="AIR_CONDITIONING"
+                                    id="featureAC" checked>
+                                <label class="form-check-label small" for="featureAC">❄️ Điều hòa</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="features" value="BLUETOOTH"
+                                    id="featureBT">
+                                <label class="form-check-label small" for="featureBT">📱 Bluetooth</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="features" value="USB_CHARGER"
+                                    id="featureUSB">
+                                <label class="form-check-label small" for="featureUSB">🔌 USB Charger</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="features" value="BACKUP_CAMERA"
+                                    id="featureCAM">
+                                <label class="form-check-label small" for="featureCAM">📷 Camera lùi</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="features" value="CRUISE_CONTROL"
+                                    id="featureCC">
+                                <label class="form-check-label small" for="featureCC">🚀 Cruise Control</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="features" value="LEATHER_SEATS"
+                                    id="featureLS">
+                                <label class="form-check-label small" for="featureLS">🪑 Ghế da</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="features" value="SUNROOF"
+                                    id="featureSR">
+                                <label class="form-check-label small" for="featureSR">☀️ Cửa sổ trời</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    {{!-- SECTION 4: Location --}}
+                    <h6 class="text-muted fw-bold text-uppercase mb-3"><i class="bi bi-geo-alt me-2"></i>Vị trí</h6>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-secondary">Thành phố *</label>
+                            <input type="text" name="location[city]" class="form-control bg-light border-0"
+                                placeholder="Hồ Chí Minh" value="{{oldData.location.city}}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-secondary">Quận/Huyện</label>
+                            <input type="text" name="location[district]" class="form-control bg-light border-0"
+                                placeholder="Quận 1" value="{{oldData.location.district}}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-secondary">Địa chỉ cụ thể</label>
+                            <input type="text" name="location[address]" class="form-control bg-light border-0"
+                                placeholder="123 Nguyễn Huệ" value="{{oldData.location.address}}">
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    {{!-- SECTION 5: Pricing & Policies --}}
+                    <h6 class="text-muted fw-bold text-uppercase mb-3"><i class="bi bi-cash me-2"></i>Chính sách thuê
+                    </h6>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-secondary">Giới hạn km/ngày</label>
+                            <input type="number" name="mileageLimit" class="form-control bg-light border-0"
+                                placeholder="200" value="{{oldData.mileageLimit}}" min="0">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-secondary">Phí vượt km (₫/km)</label>
+                            <input type="number" name="extraMileageCharge" class="form-control bg-light border-0"
+                                placeholder="5000" value="{{oldData.extraMileageCharge}}" min="0">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-secondary">Tiền đặt cọc (₫)</label>
+                            <input type="number" name="deposit" class="form-control bg-light border-0"
+                                placeholder="5000000" value="{{oldData.deposit}}" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" name="insuranceIncluded" id="insuranceIncluded"
+                            checked>
+                        <label class="form-check-label" for="insuranceIncluded">
+                            <i class="bi bi-shield-check me-1 text-success"></i>Bao gồm bảo hiểm cơ bản
+                        </label>
+                    </div>
+
+                    <hr class="my-4">
+
+                    {{!-- SECTION 6: Description & Images --}}
+                    <h6 class="text-muted fw-bold text-uppercase mb-3"><i class="bi bi-image me-2"></i>Mô tả & Hình ảnh
+                    </h6>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-secondary">Mô tả chi tiết</label>
+                        <textarea name="description" class="form-control bg-light border-0" rows="3"
+                            placeholder="Mô tả chi tiết về xe, tình trạng, điểm nổi bật...">{{oldData.description}}</textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-secondary">URL Hình ảnh</label>
+                        <input type="url" name="images" class="form-control bg-light border-0"
+                            placeholder="https://example.com/car-image.jpg" value="{{oldData.images.[0]}}">
+                        <div class="form-text"><i class="bi bi-info-circle me-1"></i>Nhập URL hình ảnh xe (có thể thêm
+                            nhiều ảnh sau)</div>
+                    </div>
+
+                    <hr class="my-4">
 
                     <div class="d-flex justify-content-between align-items-center">
-                        <a href="/cars" class="text-decoration-none text-secondary fw-medium"><i
-                                class="bi bi-arrow-left me-1"></i> Quay lại</a>
-                        <button type="submit" class="btn btn-primary btn-lg shadow-sm px-5 rounded-pill fw-bold">Lưu
-                            Thông Tin</button>
+                        <a href="/cars" class="text-decoration-none text-secondary fw-medium">
+                            <i class="bi bi-arrow-left me-1"></i> Quay lại
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm px-5 rounded-pill fw-bold">
+                            <i class="bi bi-check-lg me-2"></i>Lưu Thông Tin
+                        </button>
                     </div>
 
                 </form>
