@@ -58,6 +58,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'autorentpro-secret-key-change-in-production',
   resave: false,
   saveUninitialized: false,
+  proxy: true, // Trust Heroku proxy
   store: MongoStore.create({
     mongoUrl: process.env.MONGODB_URI,
     touchAfter: 24 * 3600 // Lazy session update (seconds)
@@ -65,7 +66,8 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 ngày
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production' // HTTPS only in production
+    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax' // Required for cross-site cookies in production
   }
 }));
 
