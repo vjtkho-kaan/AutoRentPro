@@ -1,0 +1,126 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark mb-0">Quản lý Xe</h2>
+        <p class="text-secondary small mb-0">Quản lý danh sách xe, trạng thái và giá thuê</p>
+    </div>
+
+    <a href="/cars/create" class="btn btn-primary shadow-sm">
+        <i class="bi bi-plus-lg me-1"></i> Thêm xe mới
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 text-muted small fw-bold text-uppercase ls-1">Danh sách phương tiện</h5>
+
+        <form action="/cars" method="GET" class="d-flex align-items-center gap-2">
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-filter"></i></span>
+                <select name="sort" class="form-select border-start-0 ps-0 text-secondary bg-light focus-ring-none"
+                    onchange="this.form.submit()" style="max-width: 200px;">
+                    <option value="latest" {{#if (eq currentSort 'latest' )}}selected{{/if}}>Mới nhất</option>
+                    <option value="oldest" {{#if (eq currentSort 'oldest' )}}selected{{/if}}>Cũ nhất</option>
+                    <option value="brand_alpha" {{#if (eq currentSort 'brand_alpha' )}}selected{{/if}}>Tên (A-Z)
+                    </option>
+                    <option value="year_desc" {{#if (eq currentSort 'year_desc' )}}selected{{/if}}>Năm SX (Mới &rarr;
+                        Cũ)</option>
+                    <option value="year_asc" {{#if (eq currentSort 'year_asc' )}}selected{{/if}}>Năm SX (Cũ &rarr; Mới)
+                    </option>
+                    <option value="owner_alpha" {{#if (eq currentSort 'owner_alpha' )}}selected{{/if}}>Chủ xe (A-Z)
+                    </option>
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4 py-3 text-secondary text-uppercase small" style="width: 30%;">Thông tin Xe</th>
+                        <th class="py-3 text-secondary text-uppercase small">Chủ sở hữu</th>
+                        <th class="py-3 text-secondary text-uppercase small">Năm SX</th>
+                        <th class="py-3 text-secondary text-uppercase small">Giá thuê</th>
+                        <th class="py-3 text-secondary text-uppercase small">Trạng thái</th>
+                        <th class="text-end pe-4 py-3 text-secondary text-uppercase small">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top-0">
+                    {{#each cars}}
+                    <tr>
+                        <td class="ps-4 py-3">
+                            <div class="d-flex flex-column">
+                                <span class="fw-bold text-dark">{{this.brand}} {{this.model}}</span>
+                                <span
+                                    class="badge bg-light text-secondary border mt-1 w-auto align-self-start">{{this.plateNumber}}</span>
+                            </div>
+                        </td>
+
+                        <td>
+                            {{#if this.ownerId}}
+                            <div class="d-flex flex-column">
+                                <span class="fw-medium text-dark">{{this.ownerId.name}}</span>
+                                <small class="text-muted" style="font-size: 0.85em;">{{this.ownerId.email}}</small>
+                            </div>
+                            {{else}}
+                            <span class="text-danger fst-italic small">Chưa rõ</span>
+                            {{/if}}
+                        </td>
+
+                        <td class="text-secondary">{{this.year}}</td>
+
+                        <td>
+                            <span class="fw-bold text-success">${{this.pricePerDay}}</span>
+                            <small class="text-muted">/ngày</small>
+                        </td>
+
+                        <td>
+                            {{#if this.isAvailable}}
+                            <span
+                                class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3">Sẵn
+                                sàng</span>
+                            {{/if}}
+                            {{#if this.isRented}}
+                            <span
+                                class="badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle px-3">Đang
+                                thuê</span>
+                            {{/if}}
+                            {{#if this.isMaintenance}}
+                            <span
+                                class="badge rounded-pill bg-warning-subtle text-warning border border-warning-subtle px-3">Bảo
+                                trì</span>
+                            {{/if}}
+                        </td>
+
+                        <td class="text-end pe-4">
+                            <div class="btn-group">
+                                <a href="/cars/edit/{{this._id}}" class="btn btn-sm btn-outline-secondary border-0"
+                                    title="Chỉnh sửa">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <form action="/cars/delete/{{this._id}}" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger border-0"
+                                        onclick="return confirm('Bạn có chắc chắn muốn xóa không?')" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {{else}}
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <i class="bi bi-inbox text-muted fs-1 d-block mb-2"></i>
+                            <span class="text-muted">Chưa có xe nào trong hệ thống.</span>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer bg-white border-top py-3 text-muted small text-end">
+        Hiển thị {{cars.length}} kết quả
+    </div>
+</div>

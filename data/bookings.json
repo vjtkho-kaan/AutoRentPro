@@ -1,0 +1,30 @@
+[
+  {
+    "id": "b1",
+    "carId": "c4",
+    "userId": "u1",
+    "startDate": "2026-01-10",
+    "endDate": "2026-01-15",
+    "totalPrice": 12500000,
+    "status": "CONFIRMED"
+  },
+  {
+    "id": "b2",
+    "carId": "c2",
+    "userId": "u1",
+    "startDate": "2026-02-01",
+    "endDate": "2026-02-03",
+    "totalPrice": 1200000,
+    "status": "PENDING"
+  },
+  {
+    "id": "b1767841842794",
+    "carId": "c1",
+    "userId": "u1",
+    "startDate": "2026-05-20",
+    "endDate": "2026-05-25",
+    "totalPrice": 2500000,
+    "status": "CONFIRMED",
+    "createdAt": "2026-01-08T03:10:42.795Z"
+  }
+]

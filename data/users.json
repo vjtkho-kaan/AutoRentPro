@@ -1,0 +1,20 @@
+[
+  {
+    "id": "u1",
+    "name": "Nguyen Van A",
+    "email": "ana@gmail.com",
+    "role": "CUSTOMER"
+  },
+  {
+    "id": "u2",
+    "name": "Tran Thi B",
+    "email": "btran@fpt.edu.vn",
+    "role": "CAR_OWNER"
+  },
+  {
+    "id": "u3",
+    "name": "Admin System",
+    "email": "admin@autorent.pro",
+    "role": "ADMIN"
+  }
+]

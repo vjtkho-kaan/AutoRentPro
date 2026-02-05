@@ -1,0 +1,172 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark mb-0">Quản lý Đơn Hàng</h2>
+        <p class="text-secondary small mb-0">Theo dõi và cập nhật trạng thái đơn đặt xe</p>
+    </div>
+
+    <a href="/bookings/create" class="btn btn-primary shadow-sm">
+        <i class="bi bi-plus-lg me-1"></i> Tạo đơn mới
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card-header bg-white py-3 border-bottom">
+        <h5 class="mb-0 text-muted small fw-bold text-uppercase ls-1">Danh sách Booking</h5>
+    </div>
+
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4 py-3 text-secondary text-uppercase small">Khách hàng</th>
+                        <th class="py-3 text-secondary text-uppercase small">Xe thuê</th>
+                        <th class="py-3 text-secondary text-uppercase small">Thời gian</th>
+                        <th class="py-3 text-secondary text-uppercase small text-end">Tổng tiền</th>
+                        <th class="py-3 text-secondary text-uppercase small text-center" style="width: 200px;">Trạng
+                            thái</th>
+                        <th class="pe-4 py-3 text-secondary text-uppercase small text-end" style="width: 120px;">Hành
+                            động</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top-0">
+                    {{#each bookings}}
+                    <tr>
+                        <td class="ps-4 py-3">
+                            {{#if this.userId}}
+                            <div class="d-flex flex-column">
+                                <span class="fw-bold text-dark">{{this.userId.name}}</span>
+                                <small class="text-muted">{{this.userId.email}}</small>
+                            </div>
+                            {{else}}
+                            <span class="text-danger fst-italic small">User đã xóa</span>
+                            {{/if}}
+                        </td>
+
+                        <td>
+                            {{#if this.carId}}
+                            <div class="d-flex flex-column">
+                                <span class="fw-medium text-primary">{{this.carId.brand}} {{this.carId.model}}</span>
+                                <small class="text-muted">{{this.carId.plateNumber}}</small>
+                            </div>
+                            {{else}}
+                            <span class="text-danger fst-italic small">Xe đã xóa</span>
+                            {{/if}}
+                        </td>
+
+                        <td>
+                            <div class="d-flex flex-column small">
+                                <span class="text-nowrap"><i class="bi bi-arrow-right-circle me-1 text-success"></i>
+                                    {{this.startDate}}</span>
+                                <span class="text-nowrap"><i class="bi bi-arrow-left-circle me-1 text-danger"></i>
+                                    {{this.endDate}}</span>
+                            </div>
+                        </td>
+
+                        <td class="text-end fw-bold text-success">
+                            ${{this.totalPrice}}
+                        </td>
+
+                        <td class="text-center">
+                            <form action="/bookings/update-status/{{this._id}}" method="POST">
+                                <select name="status"
+                                    class="form-select form-select-sm border-0 shadow-none fw-bold text-center"
+                                    onchange="this.form.submit()"
+                                    style="background-color: transparent; cursor: pointer;" {{#unless
+                                    this.canChangeStatus}}disabled{{/unless}}>
+
+                                    <option value="PENDING" class="text-warning" {{#if this.isPending}}selected{{/if}}>⏳
+                                        Đang chờ</option>
+                                    <option value="CONFIRMED_UNPAID" class="text-primary" {{#if
+                                        this.isConfirmedUnpaid}}selected{{/if}}>🔵 Đã chốt (Chưa trả)</option>
+                                    <option value="CONFIRMED_PAID" class="text-info" {{#if
+                                        this.isConfirmedPaid}}selected{{/if}}>🟢 Đã chốt (Đã trả)</option>
+                                    <option value="COMPLETED" class="text-success" {{#if
+                                        this.isCompleted}}selected{{/if}}>🏁 Hoàn thành</option>
+                                    <option value="CANCELLED" class="text-danger" {{#if
+                                        this.isCancelled}}selected{{/if}}>❌ Đã hủy</option>
+                                </select>
+                            </form>
+                            {{#if this.isPending}}
+                            <div class="progress mt-1" style="height: 3px;">
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: 25%"></div>
+                            </div>
+                            {{else}}
+                            {{#if this.isCompleted}}
+                            <div class="progress mt-1" style="height: 3px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                            </div>
+                            {{/if}}
+                            {{/if}}
+                        </td>
+
+                        <td class="text-end pe-4">
+                            <div class="btn-group">
+                                {{#if this.canEditContent}}
+                                <a href="/bookings/edit/{{this._id}}" class="btn btn-sm btn-outline-secondary border-0">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                {{else}}
+                                <span class="btn btn-sm btn-outline-secondary border-0 disabled opacity-25">
+                                    <i class="bi bi-pencil-square"></i>
+                                </span>
+                                {{/if}}
+
+                                {{#if this.canDelete}}
+                                <button type="button" class="btn btn-sm btn-outline-danger border-0"
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                    onclick="setDeleteAction('{{this._id}}')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                {{else}}
+                                <span class="btn btn-sm btn-outline-danger border-0 disabled opacity-25">
+                                    <i class="bi bi-trash"></i>
+                                </span>
+                                {{/if}}
+                            </div>
+                        </td>
+                    </tr>
+                    {{else}}
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <i class="bi bi-calendar-x text-muted fs-1 d-block mb-2"></i>
+                            <span class="text-muted">Chưa có đơn hàng nào trong hệ thống.</span>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Delete -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title fw-bold">Xác nhận xóa</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4 text-center">
+                <i class="bi bi-exclamation-circle text-danger display-4 mb-3 d-block"></i>
+                <p class="mb-1 fw-bold fs-5">Bạn có chắc chắn muốn xóa?</p>
+                <p class="text-muted small mb-0">Hành động này sẽ xóa vĩnh viễn đơn hàng này và không thể hoàn tác.</p>
+            </div>
+            <div class="modal-footer bg-light border-0 justify-content-center pb-4">
+                <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Hủy bỏ</button>
+                <form id="deleteForm" method="POST" action="">
+                    <button type="submit" class="btn btn-danger px-4">Xóa ngay</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setDeleteAction(id) {
+        const deleteForm = document.getElementById('deleteForm');
+        deleteForm.action = '/bookings/delete/' + id;
+    }
+</script>

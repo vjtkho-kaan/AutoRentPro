@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoRentPro - Hệ thống quản lý thuê xe</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --sidebar-bg: #111827;
+            --primary-gold: #f59e0b;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f9fafb;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <div class="d-flex h-100 min-vh-100 overflow-hidden">
+        <!-- Sidebar -->
+        {{> navbar}}
+
+        <!-- Main Content Wrapper -->
+        <div class="d-flex flex-column flex-grow-1 overflow-auto" style="height: 100vh;">
+
+            <main class="container-fluid py-4 px-4 px-md-5 flex-grow-1">
+                <!-- Breadcrumb placeholder or Header could go here -->
+                <div class="mb-4 d-flex justify-content-between align-items-center">
+                    <h5 class="text-muted fw-bold text-uppercase small ls-1">Dashboard</h5>
+                    <span class="badge bg-white text-secondary border shadow-sm px-3 py-2 rounded-pill">
+                        <i class="bi bi-clock me-1"></i> {{formatDate now}}
+                    </span>
+                </div>
+
+                {{{body}}}
+            </main>
+
+            <footer class="bg-white text-center py-4 mt-auto shadow-sm border-top">
+                <div class="container">
+                    <p class="mb-0 text-muted">
+                        &copy; 2024 <span class="fw-bold text-warning-emphasis">AutoRentPro</span>. All rights reserved.
+                    </p>
+                    <small class="text-secondary">Premium Car Rental System</small>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

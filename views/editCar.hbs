@@ -1,0 +1,89 @@
+<div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-white text-center py-4 border-bottom">
+                <h4 class="mb-1 fw-bold text-warning">Chỉnh Sửa Thông Tin</h4>
+                <p class="text-secondary small mb-0">Cập nhật chi tiết về phương tiện</p>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                <form action="/cars/update/{{car._id}}" method="POST">
+
+                    <div class="mb-4">
+                        <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Chủ sở hữu</label>
+                        <select name="ownerId" class="form-select form-select-lg bg-light border-0 focus-ring-none"
+                            required>
+                            {{#each owners}}
+                            <option value="{{this._id}}" {{#if (eq this._id ../car.ownerId)}}selected{{/if}}>
+                                {{this.name}} ({{this.email}})
+                            </option>
+                            {{/each}}
+                        </select>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Hãng xe</label>
+                            <input type="text" name="brand"
+                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
+                                value="{{car.brand}}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Mẫu xe</label>
+                            <input type="text" name="model"
+                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
+                                value="{{car.model}}" required>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Năm SX</label>
+                            <input type="number" name="year"
+                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
+                                value="{{car.year}}" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Biển số</label>
+                            <input type="text" name="plateNumber"
+                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
+                                value="{{car.plateNumber}}" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Giá thuê
+                                ($)</label>
+                            <input type="number" name="pricePerDay"
+                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
+                                value="{{car.pricePerDay}}" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Trạng thái</label>
+                        <select name="status" class="form-select form-select-lg bg-light border-0 focus-ring-none">
+                            <option value="AVAILABLE" {{#if (eq car.status 'AVAILABLE' )}}selected{{/if}}>
+                                ✅ Sẵn sàng (AVAILABLE)
+                            </option>
+                            <option value="RENTED" {{#if (eq car.status 'RENTED' )}}selected{{/if}}>
+                                🔴 Đang thuê (RENTED)
+                            </option>
+                            <option value="MAINTENANCE" {{#if (eq car.status 'MAINTENANCE' )}}selected{{/if}}>
+                                ⚠️ Bảo trì (MAINTENANCE)
+                            </option>
+                        </select>
+                    </div>
+
+                    <hr class="my-4 border-secondary-subtle">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="/cars" class="text-decoration-none text-secondary fw-medium"><i
+                                class="bi bi-arrow-left me-1"></i> Quay lại</a>
+                        <button type="submit"
+                            class="btn btn-warning btn-lg shadow-sm px-5 rounded-pill fw-bold text-white">Cập
+                            nhật</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

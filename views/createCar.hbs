@@ -1,0 +1,84 @@
+<div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+
+        {{#if error}}
+        <div class="alert alert-danger alert-dismissible fade show mb-4 shadow-sm border-0 rounded-3" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> <strong>Lỗi:</strong> {{error}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {{/if}}
+
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-white text-center py-4 border-bottom">
+                <h4 class="mb-1 fw-bold text-primary">Thêm Xe Mới</h4>
+                <p class="text-secondary small mb-0">Nhập thông tin chi tiết để thêm xe vào hệ thống</p>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                <form action="/cars/store" method="POST">
+
+                    <div class="mb-4">
+                        <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Chủ sở hữu</label>
+                        <select name="ownerId" class="form-select form-select-lg bg-light border-0 focus-ring-none"
+                            required>
+                            <option value="">-- Chọn chủ xe --</option>
+                            {{#each owners}}
+                            <option value="{{this._id}}" {{#if (eq this._id ../oldData.ownerId)}}selected{{/if}}>
+                                {{this.name}} ({{this.email}})
+                            </option>
+                            {{/each}}
+                        </select>
+                        <div class="form-text mt-2"><i class="bi bi-info-circle me-1"></i>Chỉ hiển thị User có quyền
+                            Owner.</div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Hãng xe</label>
+                            <input type="text" name="brand"
+                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
+                                placeholder="VD: Toyota" value="{{oldData.brand}}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Mẫu xe</label>
+                            <input type="text" name="model"
+                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
+                                placeholder="VD: Camry" value="{{oldData.model}}" required>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Năm SX</label>
+                            <input type="number" name="year"
+                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
+                                placeholder="2024" value="{{oldData.year}}" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Biển số</label>
+                            <input type="text" name="plateNumber"
+                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
+                                placeholder="30A-..." value="{{oldData.plateNumber}}" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Giá/ngày
+                                ($)</label>
+                            <input type="number" name="pricePerDay"
+                                class="form-control form-control-lg bg-light border-0 focus-ring-none" placeholder="50"
+                                value="{{oldData.pricePerDay}}" required>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 border-secondary-subtle">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="/cars" class="text-decoration-none text-secondary fw-medium"><i
+                                class="bi bi-arrow-left me-1"></i> Quay lại</a>
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm px-5 rounded-pill fw-bold">Lưu
+                            Thông Tin</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

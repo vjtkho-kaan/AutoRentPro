@@ -1,0 +1,42 @@
+[
+  {
+    "id": "c1",
+    "brand": "Toyota",
+    "model": "Vios 2023",
+    "pricePerDay": 500000,
+    "status": "AVAILABLE",
+    "plateNumber": "30A-12345"
+  },
+  {
+    "id": "c2",
+    "brand": "Honda",
+    "model": "City RS",
+    "pricePerDay": 600000,
+    "status": "MAINTENANCE",
+    "plateNumber": "29B-99999"
+  },
+  {
+    "id": "c3",
+    "brand": "VinFast",
+    "model": "Lux A2.0",
+    "pricePerDay": 1200000,
+    "status": "AVAILABLE",
+    "plateNumber": "51F-88888"
+  },
+  {
+    "id": "c4",
+    "brand": "Mercedes",
+    "model": "C300 AMG",
+    "pricePerDay": 2500000,
+    "status": "RENTED",
+    "plateNumber": "30H-56789"
+  },
+  {
+    "id": "c5",
+    "brand": "Kia",
+    "model": "Morning",
+    "pricePerDay": 300000,
+    "status": "AVAILABLE",
+    "plateNumber": "15A-11111"
+  }
+]

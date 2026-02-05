@@ -1,0 +1,119 @@
+<div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+
+        {{#if error}}
+        <div class="alert alert-danger alert-dismissible fade show mb-4 shadow-sm border-0 rounded-3">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> {{error}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {{/if}}
+
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-white text-center py-4 border-bottom">
+                <h4 class="mb-1 fw-bold text-warning">Chỉnh Sửa Đơn Hàng</h4>
+                <p class="text-secondary small mb-0">Cập nhật thông tin thuê xe</p>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                <form action="/bookings/update/{{booking._id}}" method="POST" id="bookingForm">
+
+                    <div class="mb-4">
+                        <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Khách hàng</label>
+                        <select name="userId" class="form-select form-select-lg bg-light border-0 focus-ring-none"
+                            required>
+                            {{#each users}}
+                            <option value="{{this._id}}" {{#if (eq this._id ../booking.userId)}}selected{{/if}}>
+                                {{this.name}} ({{this.email}})
+                            </option>
+                            {{/each}}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Chọn xe</label>
+                        <select name="carId" id="carSelect"
+                            class="form-select form-select-lg bg-light border-0 focus-ring-none" required
+                            onchange="calculateTotal()">
+                            {{#each cars}}
+                            <option value="{{this._id}}" data-price="{{this.pricePerDay}}" {{#if (eq this._id
+                                ../booking.carId)}}selected{{/if}}>
+                                {{this.brand}} {{this.model}} - ${{this.pricePerDay}}/ngày
+                            </option>
+                            {{/each}}
+                        </select>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Ngày bắt
+                                đầu</label>
+                            <input type="date" name="startDate" id="startDate"
+                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
+                                value="{{booking.startDate}}" required onchange="calculateTotal()">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-uppercase small fw-bold text-secondary ls-1">Ngày kết
+                                thúc</label>
+                            <input type="date" name="endDate" id="endDate"
+                                class="form-control form-control-lg bg-light border-0 focus-ring-none"
+                                value="{{booking.endDate}}" required onchange="calculateTotal()">
+                            <div id="dateError" class="text-danger mt-2 small fw-bold" style="display: none;">
+                                <i class="bi bi-exclamation-circle-fill me-1"></i> Ngày kết thúc phải sau ngày bắt đầu!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="alert alert-warning bg-warning-subtle border-0 rounded-3 d-flex justify-content-between align-items-center mb-4 p-3">
+                        <span class="fw-bold text-warning-emphasis small text-uppercase ls-1">Tổng thanh toán:</span>
+                        <h3 class="mb-0 fw-bold text-warning-emphasis" id="totalDisplay">$0</h3>
+                    </div>
+
+                    <hr class="my-4 border-secondary-subtle">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="/bookings" class="text-decoration-none text-secondary fw-medium"><i
+                                class="bi bi-arrow-left me-1"></i> Quay lại</a>
+                        <button type="submit"
+                            class="btn btn-warning btn-lg shadow-sm px-5 rounded-pill fw-bold text-white"
+                            id="btnSubmit">Cập Nhật</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculateTotal() {
+        const carSelect = document.getElementById('carSelect');
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const totalDisplay = document.getElementById('totalDisplay');
+        const dateError = document.getElementById('dateError');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        // Logic JavaScript tính tiền (giữ nguyên như cũ)
+        const pricePerDay = parseInt(carSelect.options[carSelect.selectedIndex].getAttribute('data-price')) || 0;
+        if (!startDateInput.value || !endDateInput.value) return;
+
+        const start = new Date(startDateInput.value);
+        const end = new Date(endDateInput.value);
+
+        dateError.style.display = 'none';
+        endDateInput.classList.remove('is-invalid');
+        btnSubmit.disabled = false;
+
+        if (end <= start) {
+            dateError.style.display = 'block';
+            endDateInput.classList.add('is-invalid');
+            totalDisplay.innerText = "Lỗi ngày";
+            btnSubmit.disabled = true;
+            return;
+        }
+
+        const diffTime = Math.abs(end - start);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const total = diffDays * pricePerDay;
+        totalDisplay.innerText = "$" + total.toLocaleString('en-US');
+    }
+    document.addEventListener("DOMContentLoaded", calculateTotal);
+</script>

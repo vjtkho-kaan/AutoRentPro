@@ -1,0 +1,80 @@
+<div class="d-flex flex-column flex-shrink-0 bg-dark text-white shadow"
+  style="width: 260px; height: 100vh; background-color: #111827 !important;">
+
+  <!-- Logo Section -->
+  <div class="d-flex align-items-center justify-content-center py-4 border-bottom border-light border-opacity-10">
+    <a href="/" class="text-decoration-none d-flex align-items-center gap-2">
+      <div class="bg-warning text-dark rounded-3 d-flex align-items-center justify-content-center shadow-lg"
+        style="width: 42px; height: 42px;">
+        <i class="bi bi-car-front-fill fs-4"></i>
+      </div>
+      <div class="d-flex flex-column">
+        <span class="fs-5 fw-bold text-white ls-1 lh-1" style="font-family: 'Outfit', sans-serif;">AutoRentPro</span>
+        <small class="text-white-50 text-uppercase" style="font-size: 0.65rem; letter-spacing: 2px;">Bookings
+          System</small>
+      </div>
+    </a>
+  </div>
+
+  <!-- Navigation Links -->
+  <div class="p-3 mt-2">
+    <div class="text-secondary text-uppercase fw-bold mb-2 px-3" style="font-size: 0.7rem; letter-spacing: 1.5px;">Main
+      Menu</div>
+
+    <ul class="nav nav-pills flex-column gap-2">
+      <li class="nav-item">
+        <a href="/cars" class="nav-link text-white-50 d-flex align-items-center px-3 py-3 rounded-3 w-100 sidebar-link">
+          <i class="bi bi-car-front me-3 fs-5"></i>
+          <span class="fw-medium">Quản lý Xe</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="/bookings"
+          class="nav-link text-white-50 d-flex align-items-center px-3 py-3 rounded-3 w-100 sidebar-link">
+          <i class="bi bi-calendar-check me-3 fs-5"></i>
+          <span class="fw-medium">Đơn hàng</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="/users"
+          class="nav-link text-white-50 d-flex align-items-center px-3 py-3 rounded-3 w-100 sidebar-link">
+          <i class="bi bi-people-fill me-3 fs-5"></i>
+          <span class="fw-medium">Người dùng</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<style>
+  /* Sidebar specific styles */
+  .sidebar-link {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Outfit', sans-serif;
+    border-left: 3px solid transparent;
+  }
+
+  .sidebar-link:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    /* Subtle highlight */
+    color: #fff !important;
+    padding-left: 1.25rem !important;
+    /* Slight animation */
+  }
+
+  .sidebar-link:hover i {
+    color: #f59e0b;
+    /* Warning color on hover */
+    transform: scale(1.1);
+    transition: transform 0.2s;
+  }
+
+  /* Active State Simulation (would need JS for real active state) */
+  .sidebar-link.active {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #f59e0b !important;
+    border-left-color: #f59e0b;
+  }
+</style>
