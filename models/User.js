@@ -45,17 +45,12 @@ const userSchema = new mongoose.Schema({
 });
 
 // Hash password trước khi lưu
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function() {
   // Chỉ hash nếu password được thay đổi hoặc là tài khoản mới
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password')) return;
   
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
-  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 // Method để so sánh password
