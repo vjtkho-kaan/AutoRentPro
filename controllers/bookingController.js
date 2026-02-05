@@ -46,7 +46,7 @@ exports.renderBookingList = async (req, res) => {
             canDelete: b.status === 'CANCELLED'
         }));
 
-        res.render('bookings', { bookings: formattedBookings, title: 'Quản lý Đơn hàng' });
+        res.render('bookings/list', { bookings: formattedBookings, title: 'Quản lý Đơn hàng' });
     } catch (err) {
         res.status(500).send("Lỗi Server: " + err.message);
     }
@@ -57,7 +57,7 @@ exports.renderCreateBookingPage = async (req, res) => {
     try {
         const customers = await User.find({ role: 'CUSTOMER' }).lean();
         const cars = await Car.find({ status: 'AVAILABLE' }).populate('ownerId').lean();
-        res.render('createBooking', { users: customers, cars, title: 'Tạo đơn hàng mới' });
+        res.render('bookings/create', { users: customers, cars, title: 'Tạo đơn hàng mới' });
     } catch (err) {
         res.status(500).send("Lỗi: " + err.message);
     }
@@ -74,7 +74,7 @@ exports.createBooking = async (req, res) => {
         const renderError = async (message) => {
             const customers = await User.find({ role: 'CUSTOMER' }).lean();
             const cars = await Car.find({ status: 'AVAILABLE' }).populate('ownerId').lean();
-            return res.render('createBooking', { 
+            return res.render('bookings/create', { 
                 users: customers, 
                 cars, 
                 error: message, // Gửi lỗi sang View
@@ -169,7 +169,7 @@ exports.renderEditBookingPage = async (req, res) => {
         if(booking.startDate) booking.startDate = new Date(booking.startDate).toISOString().split('T')[0];
         if(booking.endDate) booking.endDate = new Date(booking.endDate).toISOString().split('T')[0];
 
-        res.render('editBooking', { booking, users: customers, cars, title: 'Chỉnh sửa đơn hàng' });
+        res.render('bookings/edit', { booking, users: customers, cars, title: 'Chỉnh sửa đơn hàng' });
     } catch (err) {
         res.status(500).send("Lỗi: " + err.message);
     }
@@ -192,7 +192,7 @@ exports.updateBooking = async (req, res) => {
             const customers = await User.find({ role: 'CUSTOMER' }).lean();
             const cars = await Car.find().populate('ownerId').lean();
             const bookingData = { _id: bookingId, userId, carId, startDate, endDate }; // Giữ lại data vừa nhập
-            return res.render('editBooking', { booking: bookingData, users: customers, cars, error: message, title: 'Chỉnh sửa đơn hàng' });
+            return res.render('bookings/edit', { booking: bookingData, users: customers, cars, error: message, title: 'Chỉnh sửa đơn hàng' });
         };
 
         if (end <= start) return await renderError("Ngày kết thúc phải sau ngày bắt đầu!");

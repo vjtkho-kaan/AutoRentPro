@@ -21,7 +21,7 @@ const isAdmin = (req, res, next) => {
   if (req.session && req.session.role === 'admin') {
     return next();
   }
-  res.status(403).render('error', {
+  res.status(403).render('shared/error', {
     title: 'Truy cập bị từ chối',
     message: 'Bạn không có quyền truy cập trang này. Chỉ Admin mới được phép.',
     error: { status: 403 }
@@ -35,7 +35,7 @@ const isUser = (req, res, next) => {
   if (req.session && req.session.userId) {
     return next();
   }
-  res.status(401).render('error', {
+  res.status(401).render('shared/error', {
     title: 'Chưa xác thực',
     message: 'Bạn cần đăng nhập để thực hiện thao tác này.',
     error: { status: 401 }

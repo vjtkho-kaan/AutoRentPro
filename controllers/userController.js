@@ -16,7 +16,7 @@ exports.renderUserList = async (req, res) => {
         const admins = allUsers.filter(u => u.role === 'ADMIN');
         const others = allUsers.filter(u => u.role !== 'ADMIN');
 
-        res.render('users', { 
+        res.render('users/list', { 
             admins, 
             users: others, 
             currentSort: sortType,
@@ -30,9 +30,7 @@ exports.renderUserList = async (req, res) => {
 // --- 2. CREATE (UI): Hiển thị Form thêm mới ---
 exports.renderCreateUserPage = async (req, res) => {
     try {
-        res.render('createUser', { 
-            title: 'Thêm người dùng mới' 
-        });
+        res.render('users/create', { title: 'Tạo người dùng mới' });
     } catch (err) {
         res.status(500).send("Lỗi: " + err.message);
     }
@@ -76,7 +74,7 @@ exports.renderEditUserPage = async (req, res) => {
         const user = await User.findById(req.params.id).lean();
         if (!user) return res.redirect('/users');
         
-        res.render('editUser', { user, title: 'Chỉnh sửa User' });
+        res.render('users/edit', { user, title: 'Chỉnh sửa người dùng' });
     } catch (err) {
         res.status(500).send("Lỗi Server: " + err.message);
     }

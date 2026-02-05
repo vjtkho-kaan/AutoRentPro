@@ -162,7 +162,7 @@ exports.searchCars = async (req, res) => {
                 message: 'Lỗi khi tìm kiếm'
             });
         } else {
-            return res.render('error', {
+            return res.render('shared/error', {
                 title: 'Lỗi',
                 message: 'Lỗi khi tìm kiếm xe'
             });

@@ -44,7 +44,7 @@ exports.renderCarList = async (req, res) => {
             createdAtFormatted: car.createdAt ? new Date(car.createdAt).toLocaleDateString('vi-VN') : ''
         }));
 
-        res.render('cars', { 
+        res.render('cars/list', { 
             cars, 
             title: 'Quản lý Xe',
             currentSort: sortType // Để giữ trạng thái select box
@@ -61,7 +61,7 @@ exports.renderCreatePage = async (req, res) => {
     try {
         // [LOGIC] Chỉ lấy user có role là CAR_OWNER
         const owners = await User.find({ role: 'CAR_OWNER' }).lean();
-        res.render('createCar', { owners, title: 'Thêm xe mới' });
+        res.render('cars/create', { owners, title: 'Thêm xe mới' });
     } catch (err) {
         res.status(500).send("Lỗi: " + err.message);
     }
@@ -114,7 +114,7 @@ exports.renderEditPage = async (req, res) => {
 
         if (!car) return res.redirect('/cars');
 
-        res.render('editCar', { car, owners, title: 'Chỉnh sửa xe' });
+        res.render('cars/edit', { car, owners, title: 'Chỉnh sửa xe' });
     } catch (err) {
         res.status(500).send("Lỗi: " + err.message);
     }
