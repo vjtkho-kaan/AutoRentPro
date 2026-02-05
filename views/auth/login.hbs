@@ -1,0 +1,58 @@
+<div class="auth-header">
+    <div class="mb-3">
+        <i class="bi bi-car-front-fill" style="font-size: 3rem;"></i>
+    </div>
+    <h1>AutoRentPro</h1>
+    <p class="mb-0">Đăng nhập để tiếp tục</p>
+</div>
+
+<div class="auth-body">
+    {{#if message}}
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <i class="bi bi-info-circle me-2"></i>{{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {{/if}}
+
+    {{#if error}}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>{{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {{/if}}
+
+    <form action="/auth/login" method="POST">
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input type="email" class="form-control" id="email" name="email" required
+                    placeholder="admin@autorentpro.com">
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Mật khẩu</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                <input type="password" class="form-control" id="password" name="password" required
+                    placeholder="Nhập mật khẩu">
+            </div>
+        </div>
+
+        <div class="d-grid mb-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Đăng nhập
+            </button>
+        </div>
+
+        <div class="text-center">
+            <small class="text-muted">
+                Chưa có tài khoản?
+                <a href="/auth/register" class="text-decoration-none fw-bold" style="color: #f59e0b;">
+                    Đăng ký ngay
+                </a>
+            </small>
+        </div>
+    </form>
+</div>

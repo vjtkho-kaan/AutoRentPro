@@ -1,0 +1,66 @@
+<div class="auth-header">
+    <div class="mb-3">
+        <i class="bi bi-person-plus-fill" style="font-size: 3rem;"></i>
+    </div>
+    <h1>Đăng ký tài khoản</h1>
+    <p class="mb-0">Tạo tài khoản AutoRentPro của bạn</p>
+</div>
+
+<div class="auth-body">
+    {{#if error}}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>{{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {{/if}}
+
+    <form action="/auth/register" method="POST">
+        <div class="mb-3">
+            <label for="name" class="form-label">Họ và tên</label>
+            <input type="text" class="form-control" id="name" name="name" required placeholder="Nguyễn Văn A"
+                value="{{formData.name}}">
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required placeholder="example@email.com"
+                value="{{formData.email}}">
+            <small class="text-muted">Email phải hợp lệ và chưa được đăng ký</small>
+        </div>
+
+        <div class="mb-3">
+            <label for="phone" class="form-label">Số điện thoại</label>
+            <input type="tel" class="form-control" id="phone" name="phone" required placeholder="0123456789"
+                pattern="[0-9]{10}" value="{{formData.phone}}">
+            <small class="text-muted">10 chữ số, không có khoảng trắng</small>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Mật khẩu</label>
+            <input type="password" class="form-control" id="password" name="password" required
+                placeholder="Tối thiểu 8 ký tự" minlength="8">
+            <small class="text-muted">Tối thiểu 8 ký tự</small>
+        </div>
+
+        <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Xác nhận mật khẩu</label>
+            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required
+                placeholder="Nhập lại mật khẩu" minlength="8">
+        </div>
+
+        <div class="d-grid mb-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-2"></i>Đăng ký
+            </button>
+        </div>
+
+        <div class="text-center">
+            <small class="text-muted">
+                Đã có tài khoản?
+                <a href="/auth/login" class="text-decoration-none fw-bold" style="color: #f59e0b;">
+                    Đăng nhập ngay
+                </a>
+            </small>
+        </div>
+    </form>
+</div>
