@@ -97,6 +97,9 @@ app.get('/', (req, res) => {
 
 // --- B. PROTECTED ROUTES (Cần authentication) ---
 
+// 0. SEARCH & BROWSE (Public - anyone can search)
+app.use('/search', require('./routes/search'));
+
 // 1. MODULE CARS (Quản lý Xe) - CHỈ ADMIN
 const carController = require('./controllers/carController'); 
 
