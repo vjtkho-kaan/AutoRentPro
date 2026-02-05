@@ -136,7 +136,7 @@ exports.searchCars = async (req, res) => {
             });
         } else {
             // Regular page request
-            return res.render('cars/search', {
+            return res.render('cars/browse', {
                 title: 'Tìm kiếm xe',
                 cars,
                 filters: {

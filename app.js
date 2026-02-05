@@ -40,7 +40,27 @@ app.engine('hbs', engine({
         formatDate: (date) => {
             if (!date) return 'Không có dữ liệu';
             return new Date(date).toLocaleString('vi-VN');
-        }
+        },
+        // Helper format giá tiền
+        formatPrice: (price) => {
+            if (!price) return '0';
+            return new Intl.NumberFormat('vi-VN').format(price);
+        },
+        // Helper check includes (for arrays)
+        includes: (array, value) => {
+            if (!array) return false;
+            if (Array.isArray(array)) {
+                return array.includes(value);
+            }
+            return array === value;
+        },
+        // Helper math operations
+        add: (a, b) => a + b,
+        subtract: (a, b) => a - b,
+        gt: (a, b) => a > b,
+        gte: (a, b) => a >= b,
+        lt: (a, b) => a < b,
+        lte: (a, b) => a <= b
     }
 }));
 app.set('view engine', 'hbs');

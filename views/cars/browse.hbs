@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}} - AutoRentPro</title>
+    <link rel="stylesheet" href="/css/browse.css">
+</head>
+
+<body>
+    {{> navbar}}
+
+    <div class="browse-container">
+        <!-- HERO SEARCH SECTION -->
+        <section class="hero-search">
+            <div class="hero-content">
+                <h1>🚗 Tìm xe hoàn hảo cho chuyến đi</h1>
+                <p>Hơn 1000+ xe chất lượng cao sẵn sàng phục vụ</p>
+
+                <form class="quick-search" id="quickSearchForm">
+                    <div class="search-row">
+                        <div class="search-field">
+                            <label>📍 Địa điểm</label>
+                            <input type="text" name="city" placeholder="Thành phố..." value="{{filters.city}}">
+                        </div>
+                        <div class="search-field">
+                            <label>📅 Nhận xe</label>
+                            <input type="date" name="startDate" value="{{filters.startDate}}" required>
+                        </div>
+                        <div class="search-field">
+                            <label>📅 Trả xe</label>
+                            <input type="date" name="endDate" value="{{filters.endDate}}" required>
+                        </div>
+                        <button type="submit" class="btn-search">Tìm kiếm</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- FILTERS & RESULTS -->
+        <section class="main-content">
+            <aside class="filters-sidebar">
+                <div class="filter-header">
+                    <h3>🔍 Bộ lọc</h3>
+                    <button class="btn-reset" onclick="resetFilters()">Đặt lại</button>
+                </div>
+
+                <form id="filterForm">
+                    <!-- CATEGORY FILTER -->
+                    <div class="filter-group">
+                        <h4>Loại xe</h4>
+                        <label class="filter-option">
+                            <input type="radio" name="category" value="" {{#unless filters.category}}checked{{/unless}}>
+                            <span>Tất cả</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="category" value="ECONOMY" {{#if (eq filters.category 'ECONOMY'
+                                )}}checked{{/if}}>
+                            <span>🚙 Tiết kiệm</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="category" value="COMFORT" {{#if (eq filters.category 'COMFORT'
+                                )}}checked{{/if}}>
+                            <span>🚗 Thoải mái</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="category" value="PREMIUM" {{#if (eq filters.category 'PREMIUM'
+                                )}}checked{{/if}}>
+                            <span>✨ Cao cấp</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="category" value="SUV" {{#if (eq filters.category 'SUV'
+                                )}}checked{{/if}}>
+                            <span>🚙 SUV</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="category" value="VAN" {{#if (eq filters.category 'VAN'
+                                )}}checked{{/if}}>
+                            <span>🚐 Van</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="category" value="LUXURY" {{#if (eq filters.category 'LUXURY'
+                                )}}checked{{/if}}>
+                            <span>💎 Sang trọng</span>
+                        </label>
+                    </div>
+
+                    <!-- PRICE RANGE -->
+                    <div class="filter-group">
+                        <h4>Giá thuê/ngày</h4>
+                        <div class="price-inputs">
+                            <input type="number" name="minPrice" placeholder="Từ" value="{{filters.minPrice}}">
+                            <span>-</span>
+                            <input type="number" name="maxPrice" placeholder="Đến" value="{{filters.maxPrice}}">
+                        </div>
+                    </div>
+
+                    <!-- TRANSMISSION -->
+                    <div class="filter-group">
+                        <h4>Hộp số</h4>
+                        <label class="filter-option">
+                            <input type="checkbox" name="transmission" value="AUTOMATIC" {{#if (includes
+                                filters.transmission 'AUTOMATIC' )}}checked{{/if}}>
+                            <span>Tự động</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox" name="transmission" value="MANUAL" {{#if (includes
+                                filters.transmission 'MANUAL' )}}checked{{/if}}>
+                            <span>Số sàn</span>
+                        </label>
+                    </div>
+
+                    <!-- FUEL TYPE -->
+                    <div class="filter-group">
+                        <h4>Nhiên liệu</h4>
+                        <label class="filter-option">
+                            <input type="checkbox" name="fuelType" value="PETROL" {{#if (includes
+                                filters.fuelType 'PETROL' )}}checked{{/if}}>
+                            <span>⛽ Xăng</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox" name="fuelType" value="DIESEL" {{#if (includes
+                                filters.fuelType 'DIESEL' )}}checked{{/if}}>
+                            <span>🛢️ Dầu</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox" name="fuelType" value="ELECTRIC" {{#if (includes
+                                filters.fuelType 'ELECTRIC' )}}checked{{/if}}>
+                            <span>⚡ Điện</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox" name="fuelType" value="HYBRID" {{#if (includes
+                                filters.fuelType 'HYBRID' )}}checked{{/if}}>
+                            <span>🔋 Hybrid</span>
+                        </label>
+                    </div>
+
+                    <!-- SEATS -->
+                    <div class="filter-group">
+                        <h4>Số chỗ ngồi</h4>
+                        <select name="minSeats">
+                            <option value="">Tối thiểu</option>
+                            <option value="2" {{#if (eq filters.minSeats '2' )}}selected{{/if}}>2+</option>
+                            <option value="4" {{#if (eq filters.minSeats '4' )}}selected{{/if}}>4+</option>
+                            <option value="5" {{#if (eq filters.minSeats '5' )}}selected{{/if}}>5+</option>
+                            <option value="7" {{#if (eq filters.minSeats '7' )}}selected{{/if}}>7+</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-apply-filters">Áp dụng bộ lọc</button>
+                </form>
+            </aside>
+
+            <main class="results-area">
+                <!-- TOOLBAR -->
+                <div class="results-toolbar">
+                    <div class="results-info">
+                        <h2>{{pagination.totalCars}} xe khả dụng</h2>
+                    </div>
+                    <div class="view-controls">
+                        <select name="sortBy" id="sortSelect" onchange="applySort(this.value)">
+                            <option value="pricePerDay" {{#if (eq filters.sortBy 'pricePerDay' )}}selected{{/if}}>Giá
+                                thấp nhất</option>
+                            <option value="-pricePerDay" {{#if (eq filters.sortBy '-pricePerDay' )}}selected{{/if}}>Giá
+                                cao nhất</option>
+                            <option value="-averageRating" {{#if (eq filters.sortBy '-averageRating' )}}selected{{/if}}>
+                                Đánh giá cao</option>
+                            <option value="-totalReviews" {{#if (eq filters.sortBy '-totalReviews' )}}selected{{/if}}>
+                                Phổ biến</option>
+                        </select>
+                        <div class="view-toggle">
+                            <button class="view-btn active" data-view="grid" onclick="toggleView('grid')">
+                                <span>⊞</span>
+                            </button>
+                            <button class="view-btn" data-view="list" onclick="toggleView('list')">
+                                <span>☰</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CAR GRID -->
+                <div class="cars-grid" id="carsGrid">
+                    {{#if cars.length}}
+                    {{#each cars}}
+                    <div class="car-card">
+                        <div class="car-image">
+                            {{#if images.[0]}}
+                            <img src="{{images.[0]}}" alt="{{brand}} {{model}}">
+                            {{else}}
+                            <div class="no-image">📷 Chưa có ảnh</div>
+                            {{/if}}
+                            {{#if (gte averageRating 4.5)}}
+                            <span class="badge-premium">⭐ Top rated</span>
+                            {{/if}}
+                        </div>
+                        <div class="car-info">
+                            <div class="car-header">
+                                <h3>{{brand}} {{model}}</h3>
+                                <span class="car-year">{{year}}</span>
+                            </div>
+                            <div class="car-specs">
+                                <span class="spec">👥 {{seats}} chỗ</span>
+                                <span class="spec">⚙️ {{transmission}}</span>
+                                <span class="spec">⛽ {{fuelType}}</span>
+                            </div>
+                            <div class="car-location">
+                                📍 {{location.city}}{{#if location.district}}, {{location.district}}{{/if}}
+                            </div>
+                            {{#if averageRating}}
+                            <div class="car-rating">
+                                <span class="stars">⭐ {{averageRating}}</span>
+                                <span class="reviews">({{totalReviews}} đánh giá)</span>
+                            </div>
+                            {{/if}}
+                            <div class="car-footer">
+                                <div class="car-price">
+                                    <span class="price-amount">{{formatPrice pricePerDay}}₫</span>
+                                    <span class="price-unit">/ngày</span>
+                                </div>
+                                <a href="/cars/{{_id}}" class="btn-view-detail">Xem chi tiết →</a>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                    {{else}}
+                    <div class="no-results">
+                        <h3>😔 Không tìm thấy xe phù hợp</h3>
+                        <p>Thử điều chỉnh bộ lọc hoặc tìm kiếm khác</p>
+                        <button onclick="resetFilters()" class="btn-reset-large">Đặt lại bộ lọc</button>
+                    </div>
+                    {{/if}}
+                </div>
+
+                <!-- PAGINATION -->
+                {{#if (gt pagination.totalPages 1)}}
+                <div class="pagination">
+                    {{#if pagination.hasPrevPage}}
+                    <a href="?page={{subtract pagination.currentPage 1}}" class="page-btn">← Trước</a>
+                    {{/if}}
+
+                    <span class="page-info">Trang {{pagination.currentPage}} / {{pagination.totalPages}}</span>
+
+                    {{#if pagination.hasNextPage}}
+                    <a href="?page={{add pagination.currentPage 1}}" class="page-btn">Sau →</a>
+                    {{/if}}
+                </div>
+                {{/if}}
+            </main>
+        </section>
+    </div>
+
+    <script src="/js/browse.js"></script>
+</body>
+
+</html>
